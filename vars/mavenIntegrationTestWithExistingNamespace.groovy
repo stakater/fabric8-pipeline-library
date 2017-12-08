@@ -1,5 +1,4 @@
 #!/usr/bin/groovy
-import io.fabric8.Utils
 
 def call(body) {
     // evaluate the body block, and collect configuration into the object
@@ -8,7 +7,6 @@ def call(body) {
     body.delegate = config
     body()
 
-    def utils = new Utils()
     def args = config.additionalArgs
     def ns = config.environment
     kubeNS = "-Dkubernetes.namespace=${ns} -Dfabric8.use.existing=${ns}"

@@ -6,6 +6,8 @@ def call(body) {
     body.delegate = config
     body()
 
+    def removeNestedOpenshiftVendor = config.removeNestedOpenshiftVendor ?: false
+
     toolsImage = config.toolsImage ?: 'stakater/pipeline-tools:1.6.0'
 
     toolsNode(toolsImage: toolsImage) {
@@ -45,6 +47,15 @@ def call(body) {
                             export DOCKER_IMAGE=${dockerImage}
                             make install
                         """
+                    }
+
+                    if (removeNestedOpenshiftVendor) {
+                        stage('Remove nested openshift vendor dependencies') {
+                            sh """
+                                cd ${goProjectDir}
+                                rm -rf vendor/github.com/openshift/api/vendor
+                            """
+                        }
                     }
 
                     stage('Run Tests') {

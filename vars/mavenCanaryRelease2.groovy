@@ -10,6 +10,7 @@ def call(body) {
     def utils = new io.fabric8.Utils()
 
     def skipTests = config.skipTests ?: false
+    def disableClassPathURLCheck = config.disableClassPathURLCheck ?: false
 
     def profile = config.profile ?: '-P prod'
 
@@ -17,7 +18,7 @@ def call(body) {
 
     sh "./mvnw org.codehaus.mojo:versions-maven-plugin:2.2:set -U -DnewVersion=${config.version}"
 
-    sh "./mvnw clean -B -e -U deploy -Dmaven.test.skip=${skipTests} ${profile}"
+    sh "./mvnw clean -B -e -U deploy -Djdk.net.URLClassPath.disableClassPathURLCheck=${disableClassPathURLCheck} -Dmaven.test.skip=${skipTests} ${profile}"
 
     junitResults(body)
 

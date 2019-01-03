@@ -7,11 +7,12 @@ def call(body) {
     body()
 
     toolsImage = config.toolsImage ?: 'stakater/pipeline-tools:v1.17.0'
+    dockerUrl = config.dockerUrl ?: 'docker.release.stakater.com:443'
     chartName = config.chartName
     runPreInstall = config.runPreInstall ?: false
     notifyOnSlack = !config.notifyOnSlack ? config.notifyOnSlack : true
 
-    toolsWithCurrentKubeNode(toolsImage: toolsImage) {
+    toolsWithCurrentKubeNode(toolsImage: toolsImage, dockerUrl: dockerUrl) {
         container(name: 'tools') {
             withCurrentRepo { def repoUrl, def repoName, def repoOwner, def repoBranch ->
                 def slackChannel = "${env.SLACK_CHANNEL}"

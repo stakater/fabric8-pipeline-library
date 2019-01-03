@@ -18,7 +18,9 @@ def call(body) {
             def templates = new io.stakater.charts.Templates()
             def nexus = new io.stakater.repository.Nexus()   
             def chartManager = new io.stakater.charts.ChartManager()
-            def helmRepoUrl =  'https://chartmuseum.release.stakater.com'
+            def helmRepoUrl =  config.helmRepoUrl ?: "https://chartmuseum.release.stakater.com"
+            def nexusUrl =  config.nexusUrl ?: "http://nexus.release"
+            def chartmuseumApiUrl = config.chartmuseumApiUrl ?: 'http://chartmuseum.release/api/charts'
             def helm = new io.stakater.charts.Helm()
             String chartPackageName = ""
             String helmVersion = ""
@@ -96,7 +98,7 @@ def call(body) {
                             
                             String cmUsername = common.getEnvValue('CHARTMUSEUM_USERNAME')
                             String cmPassword = common.getEnvValue('CHARTMUSEUM_PASSWORD')
-                            chartManager.uploadToChartMuseum(chartDir, repoName.toLowerCase(), chartPackageName, cmUsername, cmPassword)                        
+                            chartManager.uploadToChartMuseum(chartDir, repoName.toLowerCase(), chartPackageName, cmUsername, cmPassword, chartmuseumApiUrl)                        
                         }
                         stage('Run Synthetic/E2E Tests') {                        
                             echo "Running synthetic tests for Maven application:  ${e2eTestJob}"   
@@ -114,7 +116,7 @@ def call(body) {
                         // If master
                         if (utils.isCD()) {
                             stage('Push Jar') {
-                                nexus.pushAppArtifact(imageName, version)                      
+                                nexus.pushAppArtifact(imageName, version, nexusUrl)                      
                             }
                             stage("Push Changes") {
                                 print "Pushing changes to Git"

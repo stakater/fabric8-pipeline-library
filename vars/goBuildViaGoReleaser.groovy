@@ -7,6 +7,7 @@ def call(body) {
     body()
 
     toolsImage = config.toolsImage ?: 'stakater/pipeline-tools:1.10.0'
+    chartmuseumApiUrl = config.chartmuseumApiUrl ?: 'http://chartmuseum.release/api/charts'
 
     toolsNode(toolsImage: toolsImage) {
         container(name: 'tools') {
@@ -128,7 +129,7 @@ def call(body) {
                         stage('Chart: Upload') {
                             String cmUsername = common.getEnvValue('CHARTMUSEUM_USERNAME')
                             String cmPassword = common.getEnvValue('CHARTMUSEUM_PASSWORD')
-                            chartManager.uploadToChartMuseum(chartDir, repoName.toLowerCase(), chartPackageName, cmUsername, cmPassword)
+                            chartManager.uploadToChartMuseum(chartDir, repoName.toLowerCase(), chartPackageName, cmUsername, cmPassword, chartmuseumApiUrl)
 
                             def packagedChartLocation = chartDir + "/" + repoName.toLowerCase() + "/" + chartPackageName;
                             chartManager.uploadToStakaterCharts(packagedChartLocation)

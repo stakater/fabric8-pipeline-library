@@ -7,7 +7,7 @@ def call(body) {
     body()
 
     def helmRepoName = config.helmRepoName ?: 'chartmuseum '
-    def helmRepoUrl = config.helmRepoUrl ?: 'http://chartmuseum'
+    def helmRepoUrl = config.helmRepoUrl ?: 'http://chartmuseum.release'
 
     def utils = new io.fabric8.Utils()
 

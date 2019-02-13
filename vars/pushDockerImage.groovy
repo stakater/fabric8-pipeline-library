@@ -32,7 +32,7 @@ def call(body) {
                 def dockerImageVersion = stakaterCommands.createImageVersionForCiAndCd(repoUrl, imagePrefix, "${env.BRANCH_NAME}", "${env.BUILD_NUMBER}")
 
                 try {
-                    stage('Canary Release') {
+                    stage('Docker Build & Push') {
                         echo "Version: ${dockerImageVersion}"                        
                         docker.buildImageWithTagCustom(dockerImage, dockerImageVersion)
                         docker.pushTagCustom(dockerImage, dockerImageVersion)
